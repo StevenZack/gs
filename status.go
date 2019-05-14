@@ -12,7 +12,6 @@ import (
 	"github.com/fatih/color"
 )
 
-
 func parseStatusLine(repoLine string) error {
 	if strings.HasSuffix(repoLine, "*") {
 		repos, e := readDir(repoLine[:len(repoLine)-1])
@@ -74,8 +73,8 @@ func gitstatusRepo(repo string) (bool, error) {
 	if strings.Contains(str, ".git") {
 		return false, errors.New(repo + " is not a git repo")
 	}
-	if strings.Contains(str, "git add") {
+	if strings.Contains(str, "git add") { //uncommited files remain
 		return false, nil
 	}
-	return true, nil
+	return true, nil //nothing to commit
 }

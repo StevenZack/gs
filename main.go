@@ -16,6 +16,7 @@ var (
 	flagList    = flag.Bool("l", false, "list all currently monitored repos")
 	flagClear   = flag.Bool("c", false, "clear all configure")
 	flagRemove  = flag.String("r", "", "remove repo in monitor list")
+	flagPull    = flag.Bool("p", false, "run git pull in all repos")
 )
 
 func main() {
@@ -41,6 +42,11 @@ func run() {
 
 	if *flagList {
 		doList(repos)
+		return
+	}
+
+	if *flagPull{
+		doPull(repos)
 		return
 	}
 
