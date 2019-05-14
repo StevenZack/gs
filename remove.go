@@ -3,14 +3,22 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 
 	"github.com/StevenZack/tools/fileToolkit"
+	"github.com/fatih/color"
 )
 
 func doRemove(confRepos []string, rm ...string) {
 	m := stringListToMap(confRepos)
 	for _, r := range rm {
-		delete(m, r)
+		path, e := filepath.Abs(r)
+		if e != nil {
+			fmt.Println("abs error :", e)
+			continue
+		}
+		delete(m, path)
+		defer fmt.Println(color.YellowString("removed " + path))
 	}
 	ss := mapToStringList(m)
 	f, e := fileToolkit.WriteFile(conf)
@@ -29,5 +37,4 @@ func doRemove(confRepos []string, rm ...string) {
 		fmt.Println("write error :", e)
 		return
 	}
-	fmt.Println(rm, "removed from config list")
 }

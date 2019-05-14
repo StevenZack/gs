@@ -9,10 +9,11 @@ import (
 )
 
 func doAddRepo(confRepos []string, add ...string) {
-	newConf := DistinctStringList(append(confRepos, add...))
-	for _, repo := range newConf {
-		fmt.Println(color.YellowString("stored " + repo))
+	repoToAdd := filterGitRepoList(add)
+	for _, repo := range repoToAdd {
+		fmt.Println(color.YellowString("added " + repo))
 	}
+	newConf := DistinctStringList(append(confRepos, repoToAdd...))
 	fmt.Println("all", len(newConf), "repos stored")
 	e := writeConf(newConf)
 	if e != nil {
