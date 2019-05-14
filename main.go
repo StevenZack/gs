@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/StevenZack/tools/fileToolkit"
 )
@@ -16,8 +17,7 @@ var (
 )
 
 func main() {
-	b := gitstatusRepo(".")
-	fmt.Println(b)
+	fmt.Println(gitstatusRepo("."))
 }
 func run() {
 	_, e := findConf()
@@ -45,20 +45,23 @@ func findConf() ([]string, error) {
 	return result, nil
 }
 
-func gitstatusRepo(repo string) error {
+func gitstatusRepo(repo string) (bool, error) {
 	cmd := exec.Command("git", "status")
 	reader, e := cmd.StdoutPipe()
 	if e != nil {
-		return e
+		return false, e
 	}
 	e = cmd.Start()
 	if e != nil {
-		return e
+		return false, e
 	}
 	b, e := ioutil.ReadAll(reader)
 	if e != nil {
-		return e
+		return false, e
 	}
-	fmt.Println(string(b))
-	return nil
+	str := string(b)
+	if strings.Contains(str, "git add") {
+		return false, nil
+	}
+	return true, nil
 }
