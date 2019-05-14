@@ -17,7 +17,7 @@ var (
 )
 
 func main() {
-	fmt.Println(gitstatusRepo("."))
+	fmt.Println(gitstatusRepo("/Users/stevenzacker/go/src/github.com/StevenZack/gitstatus"))
 }
 func run() {
 	_, e := findConf()
@@ -45,7 +45,16 @@ func findConf() ([]string, error) {
 	return result, nil
 }
 
+func parseRepoLine(repoLine string) {
+
+}
+
 func gitstatusRepo(repo string) (bool, error) {
+	e := os.Chdir(repo)
+	if e != nil {
+		return false, e
+	}
+
 	cmd := exec.Command("git", "status")
 	reader, e := cmd.StdoutPipe()
 	if e != nil {
