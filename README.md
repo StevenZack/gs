@@ -1,4 +1,4 @@
-# A Git repository monitor , status all your repo in one command
+# A Git repository monitor , `git status` all your repo in one command
 
 # Install
 ```shell
