@@ -6,10 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
 )
+
 
 func parseStatusLine(repoLine string) error {
 	if strings.HasSuffix(repoLine, "*") {
@@ -31,7 +33,11 @@ func parseStatusLine(repoLine string) error {
 	if e != nil {
 		return e
 	}
-	handleBool(b, repoLine)
+	path, e := filepath.Abs(repoLine)
+	if e != nil {
+		return e
+	}
+	handleBool(b, path)
 	return nil
 }
 

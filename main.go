@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/StevenZack/tools/fileToolkit"
-	"github.com/fatih/color"
 )
 
 var (
@@ -14,7 +13,9 @@ var (
 	conf        = fileToolkit.GetHomeDir() + sep + ".gitstatus" + sep + "config.json"
 	flagVerbose = flag.Bool("v", false, "verbose")
 	flagAdd     = flag.String("a", "", "add repo to monitor")
-	flagList    = flag.Bool("l", false, "list current monitored repos")
+	flagList    = flag.Bool("l", false, "list all currently monitored repos")
+	flagClear   = flag.Bool("c", false, "clear all configure")
+	flagRemove  = flag.String("r", "", "remove repo in monitor list")
 )
 
 func main() {
@@ -28,28 +29,32 @@ func run() {
 		return
 	}
 	if *flagAdd != "" { //  add mode
-		doAddRepo(repos)
+		ls := flagParseWithArgs(*flagAdd)
+		doAddRepo(repos, filterGitRepoList(ls)...)
+		return
+	}
+
+	if *flagClear {
+		doClear()
 		return
 	}
 
 	if *flagList {
-		for _, repo := range repos {
-			fmt.Println(color.YellowString(repo))
-		}
-		if len(repos) == 0 {
-			fmt.Println(color.RedString("no repo monitored for now"))
-		} else {
-			fmt.Println("all", len(repos), "repos stored")
-		}
-		fmt.Println("config file located at:", conf)
+		doList(repos)
+		return
+	}
+
+	if *flagRemove != "" {
+		doRemove(repos, flagParseWithArgs(*flagRemove)...)
 		return
 	}
 
 	for _, repo := range repos {
 		e := parseStatusLine(repo)
 		if e != nil {
-			fmt.Println("parseRepoLine error :", e)
-			return
+			fmt.Println("parseRepoLine error :", e, "removing it")
+			doRemove(repos, repo)
+			continue
 		}
 	}
 }

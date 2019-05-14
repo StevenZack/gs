@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -9,28 +8,13 @@ import (
 	"github.com/fatih/color"
 )
 
-func doAddRepo(confRepos []string) {
-	reposToAdd := []string{}
-	rs, e := parseAddLine(*flagAdd)
-	if e != nil {
-		fmt.Println("parse line error :", e)
-		return
-	}
-	reposToAdd = append(reposToAdd, rs...)
-	for _, arg := range flag.Args() {
-		rs2, e := parseAddLine(arg)
-		if e != nil {
-			fmt.Println("parse args error :", e)
-			continue
-		}
-		reposToAdd = append(reposToAdd, rs2...)
-	}
-	newConf := DistinctStringList(append(confRepos, reposToAdd...))
+func doAddRepo(confRepos []string, add ...string) {
+	newConf := DistinctStringList(append(confRepos, add...))
 	for _, repo := range newConf {
 		fmt.Println(color.YellowString("stored " + repo))
 	}
 	fmt.Println("all", len(newConf), "repos stored")
-	e = writeConf(newConf)
+	e := writeConf(newConf)
 	if e != nil {
 		fmt.Println("write conf error :", e)
 		return
