@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fatih/color"
+
 	"github.com/StevenZack/tools/strToolkit"
 )
 
@@ -30,7 +32,7 @@ func main() {
 			return
 		}
 		if path != "" {
-			fmt.Println(path)
+			fmt.Println(color.YellowString(path))
 		}
 		return
 	}
@@ -41,7 +43,7 @@ func main() {
 			return
 		}
 		if path != "" {
-			fmt.Println(path)
+			fmt.Println(color.RedString(path))
 		}
 		return
 	}
@@ -57,7 +59,7 @@ func main() {
 				continue
 			}
 			if path != "" {
-				fmt.Println(path)
+				fmt.Println(color.YellowString(path))
 			}
 		}
 		return
@@ -111,6 +113,10 @@ func checkGitDir(dir string) (string, error) {
 	}
 	if !info.IsDir() {
 		return "", errors.New(path + " is not dir")
+	}
+	_, e = checkIfIsGitRepo(dir)
+	if e != nil {
+		return "", e
 	}
 	return path, nil
 }
