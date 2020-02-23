@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/StevenZack/tools/fileToolkit"
+
 	"github.com/StevenZack/tools/strToolkit"
 	"github.com/fatih/color"
 )
@@ -123,11 +125,16 @@ func handleBool(b bool, repo string) {
 }
 
 func gitstatusRepo(repo string) (bool, error) {
-	e := os.Chdir(repo)
+	currentDir, e := fileToolkit.GetCurrentPath()
 	if e != nil {
 		return false, e
 	}
 
+	e = os.Chdir(repo)
+	if e != nil {
+		return false, e
+	}
+	defer os.Chdir(currentDir)
 	cmd := exec.Command("git", "status")
 	reader, e := cmd.StdoutPipe()
 	if e != nil {
