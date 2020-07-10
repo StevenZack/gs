@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -73,6 +74,17 @@ func main() {
 			fmt.Println(k)
 		}
 		return
+	}
+
+	for repo := range repoMap {
+		b, e := gitstatusRepo(repo)
+		if e != nil {
+			log.Println(e)
+			continue
+		}
+		if !b {
+			fmt.Println(color.RedString(repo))
+		}
 	}
 }
 
