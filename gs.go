@@ -76,15 +76,20 @@ func main() {
 		return
 	}
 
+	del := []string{}
 	for repo := range repoMap {
 		b, e := gitstatusRepo(repo)
 		if e != nil {
 			log.Println(e)
+			del = append(del, repo)
 			continue
 		}
 		if !b {
 			fmt.Println(color.RedString(repo))
 		}
+	}
+	for _, d := range del {
+		delete(repoMap, d)
 	}
 }
 
